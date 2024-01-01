@@ -42,7 +42,7 @@ Card cardsBuild(String img, String txt) {
   return Card(
     color: Colors.grey.shade800,
     child: SizedBox(
-      width: 170,
+      width: 165,
       child: Row(
         children: [
           SizedBox(
@@ -56,7 +56,7 @@ Card cardsBuild(String img, String txt) {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
-                10,
+                4,
                 17,
                 15,
                 17,

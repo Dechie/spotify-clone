@@ -66,15 +66,18 @@ class Api {
     );
     */
 
-    final url = Uri.https(
+    final urlhttps = Uri.https(
       'my-spotify-clone-548f4-default-rtdb.firebaseio.com',
       'songs.json',
     );
 
+    final url = 'http://localhost:8000/api/songs/';
+
     List<Song> songs = [];
     try {
-      final response = await dio.getUri(url);
+      //final response = await dio.getUri(urlhttps);
       //final response = await http.get(url);
+      final response = await dio.get(url);
       print(response.statusCode);
 
       if (response.statusCode == 200) {
@@ -96,7 +99,8 @@ class Api {
               'genre': data['genre'],
               'releaseDate': data['release_date'].toString(),
               'audioUrl': data['audio_url'],
-              'imageUrl': downloadUrl,
+              //'imageUrl': downloadUrl,
+              'imageUrl': data['image_url'],
             };
             //Song song = Song.fromMap(data2);
             //var gsUrl = song.imageUrl;

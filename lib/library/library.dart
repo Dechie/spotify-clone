@@ -3,10 +3,10 @@ import 'package:spotify_clone/library/widgets/common.dart';
 import 'package:spotify_clone/library/widgets/playlists.dart';
 
 class Library extends StatefulWidget {
-  Library({super.key});
+  const Library({super.key});
 
   @override
-  _LibraryState createState() => _LibraryState();
+  State<Library> createState() => _LibraryState();
 }
 
 class _LibraryState extends State<Library> {
@@ -38,13 +38,15 @@ class _LibraryState extends State<Library> {
               ],
             ),
           ),
-          preferredSize: Size.fromHeight(kToolbarHeight),
+          preferredSize: const Size.fromHeight(kToolbarHeight),
         ),
-        body: TabBarView(children: [
-          Playlists(),
-          Common(),
-          Common(),
-        ]),
+        body: const TabBarView(
+          children: [
+            Playlists(),
+            Common(),
+            Common(),
+          ],
+        ),
       ),
     );
   }

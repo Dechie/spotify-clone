@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:spotify_clone/homepage/services/api.dart';
 import 'package:spotify_clone/homepage/widgets/recents.dart';
-import 'package:spotify_clone/homepage/widgets/recommended.dart';
+import 'package:spotify_clone/homepage/widgets/horizontal_list.dart';
 
 import '../models/song.dart';
 import 'widgets/header_row.dart';
@@ -45,55 +45,54 @@ class _HomePageState extends State<HomePage> {
             decoration: backgroundColor(),
             child: ListView(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    HeaderRow(),
-                    const Recent(),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Ethiopian',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      HeaderRow(),
+                      const Recent(),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Ethiopian',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Recommended(
-                      categorySongs: ethipianSongs,
-                      url:
-                          'https://i.ytimg.com/vi/J2jrm838Gng/maxresdefault.jpg',
-                    ),
-                    const SizedBox(height: 15),
-                    const Text(
-                      'English Songs',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(height: 10),
+                      HorizontalList(
+                        categorySongs: ethipianSongs,
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Recommended(
-                      categorySongs: englishSongs,
-                      url:
-                          'https://gossipgist.com/uploads/25278/the-weeknd-studybreaks.jpg',
-                    ),
-                    /*
-                    const SizedBox(height: 15),
-                    const Text(
-                      'Also Listen to',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(height: 10),
+                      const Text(
+                        'English Songs',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Recommended(
-                      url:
-                          'https://i.scdn.co/image/ab67616d0000b273477dcbc6195534f52cc8048e',
-                    ),
-                    */
-                  ],
+                      const SizedBox(height: 10),
+                      HorizontalList(
+                        categorySongs: englishSongs,
+                      ),
+                      /*
+                      const SizedBox(height: 15),
+                      const Text(
+                        'Also Listen to',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const HorizontalList(
+                        url:
+                            'https://i.scdn.co/image/ab67616d0000b273477dcbc6195534f52cc8048e',
+                      ),
+                      */
+                    ],
+                  ),
                 )
               ],
             ),
