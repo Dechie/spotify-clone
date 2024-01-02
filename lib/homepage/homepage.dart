@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      //const SizedBox(height: 10),
                       HorizontalList(
                         categorySongs: englishSongs,
                       ),

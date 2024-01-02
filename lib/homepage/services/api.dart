@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:spotify_clone/models/song.dart';
+import 'package:path_provider/path_provider.dart';
 //import 'package:http/http.dart' as http;
 
 //import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -66,10 +69,12 @@ class Api {
     );
     */
 
+    /*
     final urlhttps = Uri.https(
       'my-spotify-clone-548f4-default-rtdb.firebaseio.com',
       'songs.json',
     );
+    */
 
     final url = 'http://localhost:8000/api/songs/';
 
@@ -82,32 +87,16 @@ class Api {
 
       if (response.statusCode == 200) {
         print('fetched successfully');
-        print(response.data);
+        //print(response.data);
         final jsonData = response.data as List<dynamic>;
 
         //songs = jsonData.map((data) => Song.fromMap(data)).toList();
         int count = 0;
         for (var data in jsonData) {
+          print(data['image_url']);
           print('round: $count');
           count++;
           if (data != null) {
-            var downloadUrl =
-                await getTheDownloadUrl(data['image_url'] as String);
-            var data2 = {
-              'artist': data['artist'],
-              'title': data['title'],
-              'genre': data['genre'],
-              'releaseDate': data['release_date'].toString(),
-              'audioUrl': data['audio_url'],
-              //'imageUrl': downloadUrl,
-              'imageUrl': data['image_url'],
-            };
-            //Song song = Song.fromMap(data2);
-            //var gsUrl = song.imageUrl;
-            //song.imageUrl = await getTheDownloadUrl(gsUrl!);
-            //print('unGSfied: ${song.imageUrl}');
-            //songs.add(song);
-            //print(song.imageUrl);
             songs.add(Song.fromMap(data));
           }
         }
@@ -117,5 +106,46 @@ class Api {
     }
 
     return songs;
+  }
+
+  Future<String> fetchSongFile(Song song) async {
+    var dio = Dio();
+    print(song.title);
+    final url =
+        'http://localhost:8000/api/fetchSongFile?audio_url=${song.title}';
+    try {
+      //final response = await dio.get(url);
+
+      Response<List<int>> response = await dio.get<List<int>>(
+        url,
+        options: Options(
+          responseType: ResponseType.bytes,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // Get the app directory to store the downloaded file
+        Directory appDocDir = await getApplicationDocumentsDirectory();
+        String filePath = '${appDocDir.path}/${song.title}.mp3';
+
+        List<int> bytes = response.data!;
+
+        // Write the audio file to the app directory
+        File audioFile = File(filePath);
+
+        await audioFile.writeAsBytes(bytes);
+
+        print(audioFile != null ? 'file been written' : 'file not written');
+
+        return filePath;
+      } else {
+        // Handle unsuccessful response
+        print('Failed to fetch audio');
+      }
+    } catch (e) {
+      // Handle errors
+      print('Error: $e');
+    }
+    return '';
   }
 }

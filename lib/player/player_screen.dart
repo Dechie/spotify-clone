@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:spotify_clone/homepage/services/api.dart';
 
 import '../models/song.dart';
 
@@ -21,27 +22,56 @@ class PlayerScreen extends StatefulWidget {
 }
 
 class _PlayerScreenState extends State<PlayerScreen> {
-  late Song playSong;
+  late File songFile;
+
+  AudioPlayer audioPlayer = AudioPlayer();
+  Duration _duration = Duration();
+  Duration _position = Duration();
+
+  bool isPlaying = false;
+  bool isPaused = false;
+
+  int secondsDuration = 0;
+  int minutesDuration = 0;
 
   @override
   void initState() {
     super.initState();
-    playSong = widget.song;
+    fetchSong();
+    audioPlayer.onDurationChanged.listen((Duration duration) {
+      setState(() {
+        _duration = duration;
+      });
+    });
+    audioPlayer.onPositionChanged.listen((Duration position) {
+      setState(() {
+        _position = position;
+        secondsDuration = _position.inSeconds.toInt() % 60;
+        minutesDuration = _position.inMinutes.toInt();
+      });
+    });
   }
 
   void playStreamSong() async {
-    var dio = Dio();
+    await audioPlayer.play(DeviceFileSource(songFile.path));
+    setState(() {
+      isPlaying = true;
+    });
+  }
 
-    Response response = await dio.get('url');
+  void fetchSong() async {
+    var api = Api();
+    String path = await api.fetchSongFile(widget.song);
+    File audioFile = File(path);
 
-    Directory dir = await getApplicationDocumentsDirectory();
-    File audioFile = File('${dir.path}/audio.mp3');
+    setState(() {
+      songFile = audioFile;
+    });
+  }
 
-    await audioFile.writeAsBytes(response.data);
-
-    AudioPlayer player = AudioPlayer();
-
-    await player.play(DeviceFileSource(audioFile.path));
+  void seekToSecond(int second) {
+    Duration newDuration = Duration(seconds: second);
+    audioPlayer.seek(newDuration);
   }
 
   @override
@@ -128,20 +158,20 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                   const SizedBox(height: 10),
                                   Text(
                                     widget.song.artist,
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.montserrat(
                                       textStyle: const TextStyle(
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ),
                                   const SizedBox(height: 10),
                                   Text(
                                     widget.song.title,
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.montserrat(
                                       textStyle: const TextStyle(
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ),
@@ -156,10 +186,40 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         ),
                         const SizedBox(height: 20),
                         Slider(
-                            activeColor: Colors.white,
-                            inactiveColor: Colors.grey,
-                            value: 0,
-                            onChanged: (value) {}),
+                          activeColor: Colors.white,
+                          inactiveColor: Colors.grey,
+                          value: _position.inSeconds.toDouble(),
+                          onChanged: (double value) {
+                            seekToSecond(value.toInt());
+                            setState(() {});
+                          },
+                          min: 0,
+                          max: _duration.inSeconds.toDouble(),
+                        ),
+                        const SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '${minutesDuration}:',
+                              style: GoogleFonts.roboto(
+                                textStyle: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              secondsDuration.toString(),
+                              style: GoogleFonts.roboto(
+                                textStyle: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                          ],
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -179,12 +239,30 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             Align(
                               alignment: Alignment.center,
                               child: IconButton(
-                                icon: const Icon(
-                                  Icons.play_arrow,
+                                icon: Icon(
+                                  isPlaying ? Icons.pause : Icons.play_arrow,
                                   size: 45,
                                 ),
                                 onPressed: () {
                                   // Implement play logic
+                                  if (!isPlaying) {
+                                    playStreamSong();
+                                    setState(() {
+                                      isPlaying = true;
+                                    });
+                                  } else {
+                                    audioPlayer.pause();
+                                    isPaused = true;
+                                    isPlaying = false;
+                                    setState(() {});
+                                  }
+
+                                  /*
+                                  if (!isPlaying) {
+                                  } else {
+                                    audioPlayer.pause();
+                                  }
+                                  */
                                 },
                               ),
                             ),
