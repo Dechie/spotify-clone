@@ -24,4 +24,15 @@ class Song {
       imageUrl: map['image_url'],
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'artist': artist,
+      'title': title,
+      'genre': genre,
+      'release_date': releaseDate,
+      'audio_url': audioUrl,
+      'image_url': imageUrl,
+    };
+  }
 }

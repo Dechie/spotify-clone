@@ -1,37 +1,59 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotify_clone/constants.dart';
 import 'package:spotify_clone/homepage/homepage.dart';
 import 'package:spotify_clone/library/library.dart';
+import 'package:spotify_clone/profile/profile.dart';
+import 'package:spotify_clone/providers/auth_provider.dart';
 import 'package:spotify_clone/search/search.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   try {
     await Firebase.initializeApp();
-    runApp(const MyApp());
+
+    runApp(MyApp(prefs: prefs));
   } catch (e) {
     print('failed initializing firebase: $e');
   }
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({
+    super.key,
+    required this.prefs,
+  });
+
+  final SharedPreferences prefs;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.dark,
-      home: AnimatedSplashScreen(
-        splash: Image.asset('assets/images/logo.png'),
-        nextScreen: Home(),
-        pageTransitionType: PageTransitionType.fade,
-        duration: 5000,
-        backgroundColor: Colors.black,
+    return ChangeNotifierProvider(
+      create: (_) => AuthProvider(prefs),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        darkTheme: ThemeData.dark().copyWith(
+          colorScheme: ColorScheme.fromSeed(seedColor: AppConstants.mainGreen),
+        ),
+        themeMode: ThemeMode.dark,
+        home: AnimatedSplashScreen(
+          splash: Image.asset(
+            'assets/images/logo.png',
+            width: 80,
+            height: 80,
+          ),
+          nextScreen: Home(),
+          pageTransitionType: PageTransitionType.fade,
+          duration: 5000,
+          backgroundColor: Colors.black,
+        ),
       ),
     );
   }
@@ -85,6 +107,13 @@ class _HomeState extends State<Home> {
         ),
         label: "Search",
       ),
+      BottomNavigationBarItem(
+        icon: Padding(
+          padding: const EdgeInsets.all(0),
+          child: SvgPicture.asset('assets/images/user-profile.svg'),
+        ),
+        label: "Me",
+      ),
     ];
   }
 
@@ -94,6 +123,7 @@ class _HomeState extends State<Home> {
       HomePage(),
       Library(),
       const Search(),
+      ProfileScreen(),
     ];
     return Scaffold(
       backgroundColor: Colors.black,
