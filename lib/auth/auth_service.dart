@@ -22,7 +22,7 @@ class AuthService {
       );
       print(response.statusCode);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print('response successful');
         statusCode = response.statusCode!;
         token = response.data['token'];
@@ -30,6 +30,38 @@ class AuthService {
     } catch (e) {
       print(e);
     }
+    print('$token, $statusCode');
     return (token, statusCode);
+  }
+
+  Future<User?> loginWithToken(String userToken) async {
+    print('token: $userToken');
+    var dio = Dio();
+    var url = 'http://localhost:8000/api/user';
+    Response response;
+    User? user;
+    String token = '';
+    int statusCode = 0;
+
+    try {
+      response = await dio.get(
+        url,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $userToken',
+          },
+        ),
+      );
+      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        print('response successful');
+        user = User.fromMap(response.data);
+        print(user.toString());
+      }
+    } catch (e) {
+      print(e);
+    }
+    return user;
   }
 }

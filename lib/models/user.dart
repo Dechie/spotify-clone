@@ -18,7 +18,7 @@ class User {
 
   @override
   String toString() {
-    return "{'name': $name, 'email': $email, 'token': $token!}";
+    return "{'name': $name, 'email': $email, 'token': $token}";
   }
 
   Map<String, dynamic> toMap() {

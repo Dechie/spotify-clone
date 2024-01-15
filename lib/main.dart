@@ -8,7 +8,8 @@ import 'package:spotify_clone/constants.dart';
 import 'package:spotify_clone/homepage/homepage.dart';
 import 'package:spotify_clone/library/library.dart';
 import 'package:spotify_clone/profile/profile.dart';
-import 'package:spotify_clone/providers/auth_provider.dart';
+import 'package:spotify_clone/providers/song_provider.dart';
+import 'package:spotify_clone/providers/the_auth.dart';
 import 'package:spotify_clone/search/search.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -19,7 +20,15 @@ void main() async {
   try {
     await Firebase.initializeApp();
 
-    runApp(MyApp(prefs: prefs));
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => Auth()),
+          ChangeNotifierProvider(create: (context) => SongProvider()),
+        ],
+        child: MyApp(prefs: prefs),
+      ),
+    );
   } catch (e) {
     print('failed initializing firebase: $e');
   }
@@ -35,25 +44,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AuthProvider(prefs),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        darkTheme: ThemeData.dark().copyWith(
-          colorScheme: ColorScheme.fromSeed(seedColor: AppConstants.mainGreen),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      darkTheme: ThemeData.dark().copyWith(
+        colorScheme: ColorScheme.fromSeed(seedColor: AppConstants.mainGreen),
+      ),
+      themeMode: ThemeMode.dark,
+      home: AnimatedSplashScreen(
+        splash: Image.asset(
+          'assets/images/logo.png',
+          width: 80,
+          height: 80,
         ),
-        themeMode: ThemeMode.dark,
-        home: AnimatedSplashScreen(
-          splash: Image.asset(
-            'assets/images/logo.png',
-            width: 80,
-            height: 80,
-          ),
-          nextScreen: Home(),
-          pageTransitionType: PageTransitionType.fade,
-          duration: 5000,
-          backgroundColor: Colors.black,
-        ),
+        nextScreen: const Home(),
+        pageTransitionType: PageTransitionType.fade,
+        duration: 5000,
+        backgroundColor: Colors.black,
       ),
     );
   }
@@ -110,7 +116,7 @@ class _HomeState extends State<Home> {
       BottomNavigationBarItem(
         icon: Padding(
           padding: const EdgeInsets.all(0),
-          child: SvgPicture.asset('assets/images/user-profile.svg'),
+          child: SvgPicture.asset('assets/svg/user-profile.svg'),
         ),
         label: "Me",
       ),

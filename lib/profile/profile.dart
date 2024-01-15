@@ -1,10 +1,11 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:spotify_clone/auth/login.dart';
-import 'package:spotify_clone/providers/auth_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotify_clone/auth/auth_new/my_register.dart';
 
-import '../auth/register.dart';
 import '../models/user.dart';
+import '../providers/the_auth.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,22 +14,68 @@ class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen>
+    with AfterLayoutMixin<ProfileScreen> {
   User? thisUser;
   bool isLoggedIn = false;
+  String? token, userStringified;
+  bool loginStat = false;
+  bool loginCheckCompleted = false;
+
+  var authProvider;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    readToken();
+  }
+
+  void readToken() async {
+    try {
+      String thisToken;
+      late SharedPreferences prefs;
+
+      SharedPreferences.getInstance().then((SharedPreferences sp) async {
+        prefs = sp;
+        token = prefs.getString('token');
+        thisToken = prefs.getString('token') ?? '';
+        // will be null if never previously saved
+        if (token == null) {
+          token = '---';
+          print(token);
+        } else {
+          print(thisToken);
+
+          await Provider.of<Auth>(context, listen: false).tryToken(thisToken);
+        }
+        setState(() {});
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    String? token = Provider.of<AuthProvider>(context).userToken;
-    isLoggedIn = token != null && token.isNotEmpty;
-
     return Scaffold(
-      body: Center(
-        child: isLoggedIn ? buildLoggedInUI(context) : buildLoggedOutUI(),
+      body: Consumer<Auth>(
+        builder: (context, auth, child) {
+          return auth.authenticated
+              ? buildLoggedInUI(
+                  context,
+                  auth.authedUser,
+                )
+              : buildLoggedOutUI();
+        },
       ),
     );
   }
 
-  Widget buildLoggedInUI(BuildContext context) {
+  Widget buildLoggedInUI(BuildContext context, User user) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -44,9 +91,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Center(
           child: Wrap(
             children: [
-              Text(
-                thisUser.toString(),
-              ),
+              Text(user.name),
+              const SizedBox(height: 10),
+              Text(user.email),
+              const SizedBox(height: 10),
+              Text(user.token!),
             ],
           ),
         ),
@@ -55,29 +104,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget buildLoggedOutUI() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'log in to see your profile',
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            User registeredUser = await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => SignUpPage(),
-              ),
-            );
-            if (registeredUser != null) {
-              setState(() {
-                isLoggedIn = true;
-                thisUser = registeredUser;
-              });
-            }
-          },
-          child: const Text('Log In'),
-        )
-      ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            'log in to see your profile',
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => RegisterScreen(),
+                ),
+              );
+            },
+            child: const Text('Log In'),
+          )
+        ],
+      ),
     );
   }
 }
