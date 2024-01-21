@@ -44,7 +44,7 @@ class Auth extends ChangeNotifier {
       _isLoggedIn = true;
       _token = token;
       _user.token = token;
-      print(token);
+      print('user with token: $authedUser');
       notifyListeners();
     }
   }

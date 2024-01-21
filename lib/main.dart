@@ -9,6 +9,7 @@ import 'package:spotify_clone/homepage/homepage.dart';
 import 'package:spotify_clone/library/library.dart';
 import 'package:spotify_clone/profile/profile.dart';
 import 'package:spotify_clone/providers/song_provider.dart';
+import 'package:spotify_clone/providers/song_upload.dart';
 import 'package:spotify_clone/providers/the_auth.dart';
 import 'package:spotify_clone/search/search.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,6 +26,7 @@ void main() async {
         providers: [
           ChangeNotifierProvider(create: (context) => Auth()),
           ChangeNotifierProvider(create: (context) => SongProvider()),
+          ChangeNotifierProvider(create: (context) => UploadProvider()),
         ],
         child: MyApp(prefs: prefs),
       ),

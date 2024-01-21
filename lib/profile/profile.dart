@@ -1,8 +1,11 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify_clone/auth/auth_new/my_register.dart';
+import 'package:spotify_clone/constants.dart';
+import 'package:spotify_clone/profile/user_dashboard.dart';
 
 import '../models/user.dart';
 import '../providers/the_auth.dart';
@@ -65,43 +68,13 @@ class _ProfileScreenState extends State<ProfileScreen>
       body: Consumer<Auth>(
         builder: (context, auth, child) {
           return auth.authenticated
-              ? buildLoggedInUI(
-                  context,
-                  auth.authedUser,
-                )
+              ? UserDashboard(user: auth.authedUser)
               : buildLoggedOutUI();
         },
       ),
     );
   }
 
-  Widget buildLoggedInUI(BuildContext context, User user) {
-    final size = MediaQuery.of(context).size;
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(
-          Icons.playlist_add,
-          color: Colors.grey,
-        ),
-      ),
-      body: SizedBox(
-        width: size.width,
-        height: size.height,
-        child: Center(
-          child: Wrap(
-            children: [
-              Text(user.name),
-              const SizedBox(height: 10),
-              Text(user.email),
-              const SizedBox(height: 10),
-              Text(user.token!),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget buildLoggedOutUI() {
     return Center(

@@ -1,3 +1,5 @@
+import 'package:spotify_clone/models/song_local.dart';
+
 class Song {
   Song({
     this.id,
@@ -7,11 +9,12 @@ class Song {
     required this.releaseDate,
     required this.audioUrl,
     required this.imageUrl,
+    this.filePath,
   });
 
   int? id;
   final String artist, title, genre, releaseDate;
-  String? audioUrl, imageUrl;
+  String? audioUrl, imageUrl, filePath;
 
   factory Song.fromMap(Map<String, dynamic> map) {
     return Song(
@@ -25,6 +28,18 @@ class Song {
     );
   }
 
+  factory Song.fromLocal(SongLocal songLocal) {
+    return Song(
+      artist: songLocal.artist,
+      title: songLocal.title,
+      genre: songLocal.genre,
+      releaseDate: songLocal.releaseDate,
+      audioUrl: '',
+      imageUrl:
+          'https://is4-ssl.mzstatic.com/image/thumb/Purple122/v4/c2/42/86/c2428696-763e-8c33-3026-ae8d4326f38e/source/1280x1280bb.jpg',
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'artist': artist,
@@ -34,5 +49,10 @@ class Song {
       'audio_url': audioUrl,
       'image_url': imageUrl,
     };
+  }
+
+  @override
+  String toString() {
+    return "{'artist': $artist, 'title': $title, 'genre': $genre, 'file_path': $filePath}";
   }
 }

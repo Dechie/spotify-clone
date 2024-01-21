@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 
+import '../constants.dart';
 import '../models/user.dart';
 
 class AuthService {
   Future<(String, int)> registerUser(User user) async {
     var dio = Dio();
-    var url = 'http://localhost:8000/api/register';
+    var url = '$baseUrl/register';
     Response response;
     String token = '';
     int statusCode = 0;
@@ -37,7 +38,7 @@ class AuthService {
   Future<User?> loginWithToken(String userToken) async {
     print('token: $userToken');
     var dio = Dio();
-    var url = 'http://localhost:8000/api/user';
+    var url = '$baseUrl/user';
     Response response;
     User? user;
     String token = '';

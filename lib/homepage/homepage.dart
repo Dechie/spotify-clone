@@ -21,7 +21,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Song> allSongs = [], ethipianSongs = [], englishSongs = [];
+  List<Song> allSongs = [],
+      localSongs = [],
+      ethipianSongs = [],
+      englishSongs = [],
+      edmSongs = [];
   var songProvider;
 
   @override
@@ -35,10 +39,15 @@ class _HomePageState extends State<HomePage> {
   void fetchAllSongs() async {
     final api = Api();
     List<Song> fetched = await api.fetchAllSongs();
+    List<Song> fetched2 = await api.fetchLocalSongs();
+
+    localSongs = fetched2;
 
     allSongs = fetched;
     ethipianSongs = fetched.where((song) => song.genre == 'ethiopian').toList();
     englishSongs = fetched.where((song) => song.genre == 'english').toList();
+    edmSongs = fetched.where((song) => song.genre == 'EDM').toList();
+
     songProvider = Provider.of<SongProvider>(context, listen: false);
     setState(() {});
   }
@@ -79,7 +88,31 @@ class _HomePageState extends State<HomePage> {
                               const Recent(),
                               const SizedBox(height: 20),
                               const Text(
-                                'Ethiopian',
+                                'Local Artists',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              HorizontalList(
+                                categorySongs: localSongs,
+                              ),
+                              const SizedBox(height: 10),
+                              const Text(
+                                'EDM',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              HorizontalList(
+                                categorySongs: edmSongs,
+                              ),
+                              const SizedBox(height: 10),
+                              const Text(
+                                'Pop Ethiopian',
                                 style: TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
@@ -97,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              //const SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               HorizontalList(
                                 categorySongs: englishSongs,
                               ),
@@ -124,8 +157,10 @@ class _HomePageState extends State<HomePage> {
                                 songProvider.stopSong();
                               },
                               child: ListTile(
-                                contentPadding: const EdgeInsets.only(left: 0),
+                                contentPadding:
+                                    const EdgeInsets.only(left: 0, right: 10),
                                 dense: true,
+                                isThreeLine: true,
                                 onTap: () {
                                   //PlayerScreen(song: ,);
                                   Navigator.of(context).push(
@@ -157,6 +192,35 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                 ),
+                                // leading: SizedBox(
+                                //   width: 50,
+                                //   height: 50,
+                                //   child: Image.network(
+                                //     songProvider.playingSong.imageUrl!,
+                                //   ),
+                                // ),
+                                // trailing: SizedBox(
+                                //   width: 30,
+                                //   height: 30,
+                                //   child: Row(
+                                //     children: [
+                                //       IconButton(
+                                //         icon: Icon(
+                                //           songProvider.playingIcon,
+                                //           color: Colors.white,
+                                //         ),
+                                //         onPressed: () {
+                                //           if (songProvider.isPaused) {
+                                //             songProvider.resumeSong();
+                                //           } else if (songProvider.isPlaying) {
+                                //             songProvider.pauseSong();
+                                //           }
+                                //         },
+                                //       ),
+                                //       const SizedBox(width: 5),
+                                //     ],
+                                //   ),
+                                // ),
                                 title: Row(
                                   children: [
                                     Text(songProvider.playingSong.title),
@@ -186,23 +250,23 @@ class _HomePageState extends State<HomePage> {
                                       max: songProvider.duration.inSeconds
                                           .toDouble(),
                                     ),
-                                    const SizedBox(width: 5),
-                                    Text(
-                                      mins < 10 ? '0$mins:' : '$mins:',
-                                      style: GoogleFonts.roboto(
-                                        textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      secs < 10 ? '0$secs' : '$secs',
-                                      style: GoogleFonts.roboto(
-                                        textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
+                                    // const SizedBox(width: 5),
+                                    // Text(
+                                    //   mins < 10 ? '0$mins:' : '$mins:',
+                                    //   style: GoogleFonts.roboto(
+                                    //     textStyle: const TextStyle(
+                                    //       fontWeight: FontWeight.w500,
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    // Text(
+                                    //   secs < 10 ? '0$secs' : '$secs',
+                                    //   style: GoogleFonts.roboto(
+                                    //     textStyle: const TextStyle(
+                                    //       fontWeight: FontWeight.w500,
+                                    //     ),
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                               ),
