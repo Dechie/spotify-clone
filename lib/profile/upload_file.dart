@@ -172,14 +172,14 @@ class _UploadNewScreenState extends State<UploadNewScreen> {
                               const BorderSide(color: AppConstants.mainGreen),
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        label: const Text('Enter Username'),
+                        label: const Text('Enter Title'),
                       ),
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||
                             value.trim().length <= 1 ||
                             value.trim().length >= 50) {
-                          return 'Please enter a username';
+                          return 'Please enter a title';
                         }
                         return null;
                       },
@@ -196,7 +196,7 @@ class _UploadNewScreenState extends State<UploadNewScreen> {
                               const BorderSide(color: AppConstants.mainGreen),
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        label: const Text('Enter Username'),
+                        label: const Text('enter file path'),
                       ),
                       validator: (value) {
                         if (filePathController.text.isNotEmpty) {
