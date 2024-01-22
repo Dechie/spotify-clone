@@ -48,7 +48,9 @@ class _HomePageState extends State<HomePage> {
     englishSongs = fetched.where((song) => song.genre == 'english').toList();
     edmSongs = fetched.where((song) => song.genre == 'EDM').toList();
 
-    songProvider = Provider.of<SongProvider>(context, listen: false);
+    if (mounted) {
+      songProvider = Provider.of<SongProvider>(context, listen: false);
+    }
     setState(() {});
   }
 
@@ -87,11 +89,13 @@ class _HomePageState extends State<HomePage> {
                               HeaderRow(),
                               const Recent(),
                               const SizedBox(height: 20),
-                              const Text(
+                              Text(
                                 'Local Artists',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: const TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 10),
@@ -99,11 +103,13 @@ class _HomePageState extends State<HomePage> {
                                 categorySongs: localSongs,
                               ),
                               const SizedBox(height: 10),
-                              const Text(
+                              Text(
                                 'EDM',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: const TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 10),
@@ -111,11 +117,13 @@ class _HomePageState extends State<HomePage> {
                                 categorySongs: edmSongs,
                               ),
                               const SizedBox(height: 10),
-                              const Text(
+                              Text(
                                 'Pop Ethiopian',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: const TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 10),
@@ -123,11 +131,13 @@ class _HomePageState extends State<HomePage> {
                                 categorySongs: ethipianSongs,
                               ),
                               const SizedBox(height: 10),
-                              const Text(
+                              Text(
                                 'English Songs',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: const TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 10),
@@ -192,35 +202,6 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                 ),
-                                // leading: SizedBox(
-                                //   width: 50,
-                                //   height: 50,
-                                //   child: Image.network(
-                                //     songProvider.playingSong.imageUrl!,
-                                //   ),
-                                // ),
-                                // trailing: SizedBox(
-                                //   width: 30,
-                                //   height: 30,
-                                //   child: Row(
-                                //     children: [
-                                //       IconButton(
-                                //         icon: Icon(
-                                //           songProvider.playingIcon,
-                                //           color: Colors.white,
-                                //         ),
-                                //         onPressed: () {
-                                //           if (songProvider.isPaused) {
-                                //             songProvider.resumeSong();
-                                //           } else if (songProvider.isPlaying) {
-                                //             songProvider.pauseSong();
-                                //           }
-                                //         },
-                                //       ),
-                                //       const SizedBox(width: 5),
-                                //     ],
-                                //   ),
-                                // ),
                                 title: Row(
                                   children: [
                                     Text(songProvider.playingSong.title),
@@ -250,23 +231,6 @@ class _HomePageState extends State<HomePage> {
                                       max: songProvider.duration.inSeconds
                                           .toDouble(),
                                     ),
-                                    // const SizedBox(width: 5),
-                                    // Text(
-                                    //   mins < 10 ? '0$mins:' : '$mins:',
-                                    //   style: GoogleFonts.roboto(
-                                    //     textStyle: const TextStyle(
-                                    //       fontWeight: FontWeight.w500,
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    // Text(
-                                    //   secs < 10 ? '0$secs' : '$secs',
-                                    //   style: GoogleFonts.roboto(
-                                    //     textStyle: const TextStyle(
-                                    //       fontWeight: FontWeight.w500,
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
                               ),
@@ -283,16 +247,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  // BoxDecoration backgroundColor() {
-  //   return const BoxDecoration(
-  //     gradient: LinearGradient(
-  //       colors: [
-  //         Colors.purple,
-  //         Colors.black,
-  //       ],
-  //       begin: Alignment.topCenter,
-  //     ),
-  //   );
-  // }
 }

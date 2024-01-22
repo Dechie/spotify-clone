@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HeaderRow extends StatefulWidget {
   HeaderRow({Key? key}) : super(key: key);
@@ -10,8 +11,8 @@ class HeaderRow extends StatefulWidget {
 class _HeaderRowState extends State<HeaderRow> {
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.fromLTRB(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
         15,
         20,
         15,
@@ -22,9 +23,11 @@ class _HeaderRowState extends State<HeaderRow> {
         children: [
           Text(
             'Hello, User',
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
+            style: GoogleFonts.montserrat(
+              textStyle: const TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Icon(

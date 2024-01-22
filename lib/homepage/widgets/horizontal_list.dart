@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify_clone/player/player_screen.dart';
 import 'package:spotify_clone/providers/song_provider.dart';
@@ -53,13 +54,15 @@ class _HorizontalListState extends State<HorizontalList> {
                     songProvider.stopSong();
                     await Future.delayed(const Duration(milliseconds: 500));
                   }
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => PlayerScreen(
-                        song: widget.categorySongs[index],
+                  if (mounted) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => PlayerScreen(
+                          song: widget.categorySongs[index],
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  }
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,18 +75,20 @@ class _HorizontalListState extends State<HorizontalList> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      //'kutty pattas',
                       widget.categorySongs[index].artist,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.montserrat(
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     Text(
-                      //'Single, Santhosh',
                       widget.categorySongs[index].title,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
+                      style: GoogleFonts.montserrat(
+                        textStyle: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ],
@@ -156,7 +161,6 @@ class _HorizontalListLocalState extends State<HorizontalListLocal> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Image.network(
-                        //url,
                         //widget.localSongs[index].imageUrl!,
                         '',
                         width: 130,

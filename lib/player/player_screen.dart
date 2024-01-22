@@ -88,7 +88,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           const Spacer(),
                           Text(
                             'Playing Song',
-                            style: GoogleFonts.roboto(
+                            style: GoogleFonts.montserrat(
                               textStyle: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
@@ -181,7 +181,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               children: [
                                 Text(
                                   mins < 10 ? '0$mins:' : '$mins:',
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.montserrat(
                                     textStyle: const TextStyle(
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -189,7 +189,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 ),
                                 Text(
                                   secs < 10 ? '0$secs' : '$secs',
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.montserrat(
                                     textStyle: const TextStyle(
                                       fontWeight: FontWeight.w500,
                                     ),
