@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/song.dart';
 
 class SongProvider extends ChangeNotifier {
@@ -29,6 +31,9 @@ class SongProvider extends ChangeNotifier {
   Duration _duration = Duration();
   Duration _position = Duration();
 
+  List<Song> likedSongs = [];
+  List<Song> likedLocals = [];
+
   SongProvider() {
     _audioPlayer.onDurationChanged.listen((Duration duration) {
       _duration = duration;
@@ -41,6 +46,15 @@ class SongProvider extends ChangeNotifier {
 
       if (_position == _duration) {
         stopSong();
+        playingFile!.delete();
+        _song = Song(
+          artist: '',
+          title: '',
+          genre: '',
+          releaseDate: '',
+          audioUrl: '',
+          imageUrl: '',
+        );
       }
       notifyListeners();
     });
@@ -73,9 +87,9 @@ class SongProvider extends ChangeNotifier {
   }
 
   void stopSong() {
-    //_audioPlayer.seek(Duration.zero);
     _position = Duration.zero;
     _audioPlayer.stop();
+    playingFile!.delete();
     _isCurrentlyPlaying = false;
     _isPlaying = false;
     _isPaused = false;
@@ -96,4 +110,120 @@ class SongProvider extends ChangeNotifier {
   Song get playingSong => _song;
   Duration get position => _position;
   Duration get duration => _duration;
+
+  void likeSong(Song song) {
+    likedSongs.add(song);
+
+    if (likedSongs.contains(song)) {
+      return;
+    }
+    saveToLikedSongs(likedSongs);
+    notifyListeners();
+  }
+
+  void dislikeSong(Song song) {
+    Song? findSong = likedSongs.firstWhere(
+      (sg) => sg.artist == song.artist && sg.title == song.title,
+    );
+    removeFromLikedSongs(findSong);
+    likedSongs.remove(findSong);
+    notifyListeners();
+  }
+
+  void likeLocal(Song song) {
+    likedLocals.add(song);
+    saveToLikedLocals(likedLocals);
+    notifyListeners();
+  }
+
+  void dislikeLocal(Song song) {
+    Song? findSong = likedLocals.firstWhere(
+      (sg) => sg.artist == song.artist && sg.title == song.title,
+    );
+    removeFromLikedLocals(findSong);
+    likedLocals.remove(findSong);
+    notifyListeners();
+  }
+
+  void saveToLikedSongs(List<Song> theSongs) async {
+    final prefs = await SharedPreferences.getInstance();
+    //prefs.setStringList('liked-songs', []);
+    List<String> likedString = theSongs
+        .map(
+          (liked) => liked.toString(),
+        )
+        .toList();
+  }
+
+  void saveToLikedLocals(List<Song> theSongs) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> likedString = likedLocals
+        .map(
+          (liked) => liked.toString(),
+        )
+        .toList();
+    prefs.setStringList('liked-locals', likedString);
+  }
+
+  void removeFromLikedSongs(Song song) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> likedString = prefs.getStringList('liked-songs')!;
+
+    List<Song> songs = [];
+
+    for (var str in likedString) {
+      Song sng = Song.fromString(str);
+
+      if (sng.artist == song.artist && sng.title == song.title) {
+        continue;
+      }
+      songs.add(Song.fromString(str));
+    }
+    saveToLikedSongs(songs);
+  }
+
+  void removeFromLikedLocals(Song song) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> likedString = prefs.getStringList('liked-locals')!;
+
+    List<Song> songs = [];
+
+    for (var str in likedString) {
+      Song sng = Song.fromString(str);
+
+      if (sng.artist == song.artist && sng.title == song.title) {
+        continue;
+      }
+      songs.add(Song.fromString(str));
+    }
+    saveToLikedLocals(songs);
+  }
+
+  void fetchLocalsFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    //prefs.setStringList('liked-locals', []);
+    List<String>? likedString = prefs.getStringList('liked-locals');
+
+    List<Song> songs = [];
+
+    for (var str in likedString!) {
+      songs.add(Song.fromString(str));
+    }
+    likedLocals = songs;
+    notifyListeners();
+  }
+
+  void fetchSongsFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    //prefs.setStringList('liked-songs', []);
+    List<String>? likedString = prefs.getStringList('liked-songs');
+
+    List<Song> songs = [];
+
+    for (var str in likedString!) {
+      songs.add(Song.fromString(str));
+    }
+    likedSongs = songs;
+    notifyListeners();
+  }
 }

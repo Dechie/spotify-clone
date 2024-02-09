@@ -109,7 +109,7 @@ class HorizontalListLocal extends StatefulWidget {
     required this.localSongs,
   });
 
-  final List<SongLocal> localSongs;
+  final List<Song> localSongs;
 
   @override
   State<HorizontalListLocal> createState() => _HorizontalListLocalState();
@@ -123,6 +123,11 @@ class _HorizontalListLocalState extends State<HorizontalListLocal> {
     super.initState();
 
     songProvider = Provider.of<SongProvider>(context, listen: false);
+
+    // widget.localSongs.forEach((element) {
+    //   element.imageUrl =
+    //       "https://is4-ssl.mzstatic.com/image/thumb/Purple122/v4/c2/42/86/c2428696-763e-8c33-3026-ae8d4326f38e/source/1280x1280bb.jpg";
+    // });
   }
 
   @override
@@ -149,20 +154,22 @@ class _HorizontalListLocalState extends State<HorizontalListLocal> {
                       songProvider.stopSong();
                       await Future.delayed(const Duration(milliseconds: 500));
                     }
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => PlayerScreen(
-                          song: Song.fromLocal(widget.localSongs[index]),
+                    if (mounted) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => PlayerScreen(
+                            song: widget.localSongs[index],
+                            isLocal: true,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Image.network(
-                        //widget.localSongs[index].imageUrl!,
-                        '',
+                        widget.localSongs[index].imageUrl!,
                         width: 130,
                         height: 130,
                       ),
@@ -175,7 +182,6 @@ class _HorizontalListLocalState extends State<HorizontalListLocal> {
                         ),
                       ),
                       Text(
-                        //'Single, Santhosh',
                         widget.localSongs[index].title,
                         style: const TextStyle(
                           color: Colors.grey,

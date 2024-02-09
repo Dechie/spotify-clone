@@ -37,17 +37,6 @@ class Search extends StatelessWidget {
                 SizedBox(height: 10),
                 SearchCards(),
                 SizedBox(height: 15),
-                Text(
-                  'Browse all',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 10),
-                SearchCards(),
-                SearchCards(),
-                SearchCards(),
               ],
             ),
           ),

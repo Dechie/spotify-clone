@@ -20,6 +20,7 @@ class User {
   String toString() {
     return "{'name': $name, 'email': $email, 'token': $token}";
   }
+  
 
   Map<String, dynamic> toMap() {
     return {

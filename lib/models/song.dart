@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:spotify_clone/models/song_local.dart';
 
 class Song {
@@ -40,6 +42,12 @@ class Song {
     );
   }
 
+  factory Song.fromString(String song) {
+    Map<String, dynamic> data = json.decode(song);
+    print(data.toString());
+    return Song.fromMap(data);
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'artist': artist,
@@ -53,6 +61,6 @@ class Song {
 
   @override
   String toString() {
-    return "{'artist': $artist, 'title': $title, 'genre': $genre, 'file_path': $filePath}";
+    return '{"artist": "$artist", "title": "$title", "genre": "$genre", "file_path": "$filePath"}';
   }
 }

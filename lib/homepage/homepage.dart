@@ -44,7 +44,11 @@ class _HomePageState extends State<HomePage> {
     localSongs = fetched2;
 
     allSongs = fetched;
-    ethipianSongs = fetched.where((song) => song.genre == 'ethiopian').toList();
+    ethipianSongs = fetched
+        .where(
+          (song) => song.genre == 'ethiopian',
+        )
+        .toList();
     englishSongs = fetched.where((song) => song.genre == 'english').toList();
     edmSongs = fetched.where((song) => song.genre == 'EDM').toList();
 
@@ -99,8 +103,21 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               const SizedBox(height: 10),
+                              HorizontalListLocal(
+                                localSongs: localSongs,
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Pop Ethiopian',
+                                style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                              ),
+                              const SizedBox(height: 10),
                               HorizontalList(
-                                categorySongs: localSongs,
+                                categorySongs: ethipianSongs,
                               ),
                               const SizedBox(height: 10),
                               Text(
@@ -115,20 +132,6 @@ class _HomePageState extends State<HomePage> {
                               const SizedBox(height: 10),
                               HorizontalList(
                                 categorySongs: edmSongs,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Pop Ethiopian',
-                                style: GoogleFonts.montserrat(
-                                  textStyle: const TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              HorizontalList(
-                                categorySongs: ethipianSongs,
                               ),
                               const SizedBox(height: 10),
                               Text(

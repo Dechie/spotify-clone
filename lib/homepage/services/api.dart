@@ -128,6 +128,8 @@ class Api {
       songs = locals.map((e) => Song.fromLocal(e)).toList();
     }
 
+    print('image url: ${songs[0].imageUrl}');
+
     return songs;
   }
 
@@ -199,5 +201,45 @@ class Api {
     } catch (error) {
       print('Error uploading file: $error');
     }
+  }
+
+  fetchSongFileLocal(Song song) async {
+    var dio = Dio();
+    print(song.title);
+    final url = '$baseUrl/localSongs/getSong?audio_url=${song.title}';
+    try {
+      //final response = await dio.get(url);
+
+      Response<List<int>> response = await dio.get<List<int>>(
+        url,
+        options: Options(
+          responseType: ResponseType.bytes,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // Get the app directory to store the downloaded file
+        Directory appDocDir = await getApplicationDocumentsDirectory();
+        String filePath = '${appDocDir.path}/${song.title}.mp3';
+
+        List<int> bytes = response.data!;
+
+        // Write the audio file to the app directory
+        File audioFile = File(filePath);
+
+        await audioFile.writeAsBytes(bytes);
+
+        print(audioFile != null ? 'file been written' : 'file not written');
+
+        return filePath;
+      } else {
+        // Handle unsuccessful response
+        print('Failed to fetch audio');
+      }
+    } catch (e) {
+      // Handle errors
+      print('Error: $e');
+    }
+    return '';
   }
 }

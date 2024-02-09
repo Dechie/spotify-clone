@@ -9,12 +9,14 @@ import 'package:spotify_clone/providers/song_provider.dart';
 import '../models/song.dart';
 
 class PlayerScreen extends StatefulWidget {
-  const PlayerScreen({
+  PlayerScreen({
     super.key,
+    this.isLocal,
     required this.song,
   });
 
   final Song song;
+  bool? isLocal;
 
   @override
   State<PlayerScreen> createState() => _PlayerScreenState();
@@ -22,18 +24,36 @@ class PlayerScreen extends StatefulWidget {
 
 class _PlayerScreenState extends State<PlayerScreen> {
   late File songFile;
+  bool isLiked = false;
+  bool isDisliked = false;
 
   late SongProvider songProvider;
   @override
   void initState() {
     super.initState();
-    fetchSong();
+    bool isLocal = widget.isLocal ?? false;
+
+    if (isLocal) {
+      fetchSongLocal();
+    } else {
+      fetchSong();
+    }
     songProvider = Provider.of<SongProvider>(context, listen: false);
   }
 
   void fetchSong() async {
     var api = Api();
     String path = await api.fetchSongFile(widget.song);
+    File audioFile = File(path);
+
+    setState(() {
+      songFile = audioFile;
+    });
+  }
+
+  void fetchSongLocal() async {
+    var api = Api();
+    String path = await api.fetchSongFileLocal(widget.song);
     File audioFile = File(path);
 
     setState(() {
@@ -158,9 +178,55 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                   ),
                                 ),
                                 const Spacer(),
-                                const Icon(Icons.add),
+                                IconButton(
+                                  onPressed: () {
+                                    bool isLocal = widget.isLocal ?? false;
+                                    if (!isLiked) {
+                                      if (isLocal) {
+                                        songProvider.likeLocal(widget.song);
+                                      } else {
+                                        songProvider.likeSong(widget.song);
+                                      }
+                                    }
+
+                                    if (isDisliked) {
+                                      isDisliked = false;
+                                    }
+                                    isLiked = !isLiked;
+                                    setState(() {});
+                                  },
+                                  icon: Icon(
+                                    isLiked
+                                        ? Icons.thumb_up
+                                        : Icons.thumb_up_outlined,
+                                  ),
+                                ),
                                 const SizedBox(width: 10),
-                                const Icon(Icons.add),
+                                IconButton(
+                                  onPressed: () {
+                                    if (!isDisliked) {
+                                      isLiked = !isLiked;
+                                      bool isLocal = widget.isLocal ?? false;
+                                      if (isLocal) {
+                                        songProvider.dislikeLocal(widget.song);
+                                      } else {
+                                        songProvider.dislikeSong(widget.song);
+                                      }
+                                    }
+
+                                    if (isLiked) {
+                                      isLiked = false;
+                                    }
+                                    setState(() {
+                                      isDisliked = !isDisliked;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    isDisliked
+                                        ? Icons.thumb_down
+                                        : Icons.thumb_down_outlined,
+                                  ),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 20),
