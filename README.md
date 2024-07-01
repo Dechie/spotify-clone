@@ -1,17 +1,16 @@
 # spotify_clone
 
-A new Flutter project.
+## A spotify clone flutter app with custom Laravel API.
 
-## Getting Started
+The spotify backend can be found [Here](https://github.com/Dechie/spotify-backend)
 
-This project is a starting point for a Flutter application.
+### demos
 
-A few resources to get you started if this is your first Flutter project:
+[img1](demos/img1.png)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# spotify-clone
+[img2](demos/img2.png)
+---
+
+[img3](demos/img3.png)
